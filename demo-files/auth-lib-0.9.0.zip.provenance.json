@@ -1,0 +1,29 @@
+{
+  "_type": "https://in-toto.io/Statement/v1",
+  "subject": [
+    {
+      "name": "auth-lib-0.9.0.zip",
+      "digest": {
+        "sha256": "6142fa5c84133205ae5d13dba8ca5d16315267816644e28dcec1cc80b7b6bf04"
+      }
+    }
+  ],
+  "predicateType": "https://slsa.dev/provenance/v1",
+  "predicate": {
+    "buildDefinition": {
+      "buildType": "https://example.com/hermetic-build/v1",
+      "externalParameters": {
+        "source": "git+https://github.com/example/auth-lib",
+        "commit": "71e4056a35df8fedb18a81d451419d664fbfbc39"
+      }
+    },
+    "runDetails": {
+      "builder": {
+        "id": "https://github.com/example/auth-lib/.github/workflows/build.yml"
+      },
+      "metadata": {
+        "startedOn": "2026-11-01T00:00:00Z"
+      }
+    }
+  }
+}

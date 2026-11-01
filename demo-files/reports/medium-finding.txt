@@ -1,0 +1,2 @@
+MEDIUM: the update checker does not verify TLS certificates.
+Impact: a network attacker could serve a fake update manifest.

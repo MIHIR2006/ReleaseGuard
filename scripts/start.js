@@ -14,7 +14,7 @@ const DEMO = process.argv.includes("--demo");
 const NO_OPEN = process.argv.includes("--no-open");
 const SKIP_TESTS = process.argv.includes("--skip-tests");
 const RPC_PORT = 7545, WEB_PORT = 3000;
-const URL = `http://localhost:${WEB_PORT}/src/index.html`;
+const URL = `http://localhost:${WEB_PORT}/`;
 const isWin = process.platform === "win32";
 const children = [];
 
@@ -24,7 +24,11 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 function run(cmd, label) {
   say(label);
   const r = spawnSync(cmd, { shell: true, stdio: "inherit", cwd: ROOT });
-  if (r.status !== 0) { console.error(`\nFAILED: ${cmd}`); cleanup(1); }
+  if (r.status !== 0) {
+    console.error(`\nFAILED: ${cmd}\nThe launcher stopped. Fix the error above and run it again.`);
+    cleanup(1);
+    throw new Error("step failed");
+  }
 }
 
 function portOpen(port) {
@@ -72,7 +76,8 @@ function openBrowser(url) {
   console.log("ReleaseGuard launcher" + (DEMO ? " (demo mode)" : ""));
 
   // 1. dependencies (first run only)
-  if (!fs.existsSync(path.join(ROOT, "node_modules", "truffle"))) run("npm install", "Installing packages (first run only)");
+  const need = ["truffle", "vite", "react", "web3-browser"];
+  if (need.some((m) => !fs.existsSync(path.join(ROOT, "node_modules", m)))) run("npm install", "Installing packages (first run or after an update)");
 
   // 2. make sure the ports are free
   if (await portOpen(RPC_PORT)) {
@@ -109,13 +114,15 @@ function openBrowser(url) {
   if (!SKIP_TESTS) run("npx truffle test", "Running the tests (23 expected)");
   run("node scripts/make-samples.js", "Creating sample files");
   run("node scripts/make-provenance.js sample/app-v1.0.0.zip", "Creating provenance file");
+  run("node scripts/make-demo-files.js", "Creating the live-demo file kit (demo-files folder)");
   if (DEMO) run("node scripts/seed-demo.js", "Loading demo data");
 
   // 5. website
-  say("Starting the website");
-  const web = spawn(`npx http-server . -p ${WEB_PORT} -c-1 -s`, { shell: true, cwd: ROOT, detached: !isWin, stdio: "ignore" });
+  say("Starting the website (React + Vite)");
+  const web = spawn(`npx vite --port ${WEB_PORT} --strictPort --host 127.0.0.1`, { shell: true, cwd: ROOT, detached: !isWin, stdio: "ignore" });
   children.push(web);
-  await sleep(2500);
+  for (let i = 0; i < 60 && !(await portOpen(WEB_PORT)); i++) await sleep(500);
+  if (!(await portOpen(WEB_PORT))) { console.log("The website did not start in 30 seconds."); cleanup(1); return; }
 
   console.log(`
 =====================================================================
@@ -129,4 +136,4 @@ function openBrowser(url) {
  Stop    : press Ctrl+C in this window
 =====================================================================`);
   if (!NO_OPEN) openBrowser(URL);
-})().catch((e) => { console.error(e); cleanup(1); });
+})().catch((e) => { if (e && e.message !== "step failed") console.error(e); cleanup(1); });

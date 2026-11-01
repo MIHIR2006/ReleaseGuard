@@ -1,7 +1,7 @@
 # ReleaseGuard
 
 A blockchain trust registry for software releases, blockchain-node snapshots and bug bounties.
-Built with Solidity, Truffle, Ganache, MetaMask and Web3.js.
+Built with Solidity, Truffle, Ganache, MetaMask, Web3.js and a React (Vite) frontend.
 
 
 ![System design](docs/system-design.png)
@@ -16,6 +16,19 @@ Built with Solidity, Truffle, Ganache, MetaMask and Web3.js.
 
 Authenticity is checked by **hash comparison**, not by a digital signature. Only the hash of the provenance file
 is stored on-chain, so signature checks (e.g. Sigstore) stay off-chain.
+
+## Frontend (React + Vite)
+
+The interface follows the project's `design.md`: a warm peach canvas, large Bebas Neue display type in violet, black pill buttons, flat pastel cards (no shadows), badge pills for statuses, a toast area at the bottom left and a small dots widget on the right edge.
+
+- **Wallet:** connects through MetaMask and Web3.js. It reconnects silently on reload and follows account and network changes.
+- **Role-aware:** the header shows your role (Owner, Attester or User), and attester-only actions are disabled for other accounts.
+- **Live data:** releases, findings, balances and bounty pools refresh every 5 seconds and after every transaction.
+- **Releases tab:** click a row to see the source commit, attestation hash and proof digest.
+- **Errors:** contract revert reasons (for example "publisher cannot report own release") are shown in a toast.
+- **Fonts:** headlines use MetaMask's hero face **Grotzec Cond Bold** when it is available, otherwise **Bebas Neue**. Grotzec is a commercial font (Feliciano Type), so it is not bundled. To use it, install a licensed copy on your computer, or copy `GrotzecCond-Bold.woff2` (or `.otf`) into `web/public/fonts/` (see the README.txt there). Body text uses DM Sans and Inter.
+- **Responsive:** the layout adapts from phones to wide desktops (four stat cards, then two, then one; forms stack; tabs scroll sideways on small screens).
+- **Legacy version:** the earlier plain HTML + JavaScript page is kept in `legacy/` and runs with `npm run serve:legacy` (open http://localhost:3000/legacy/index.html).
 
 ## Smart contract: `contracts/ReleaseGuard.sol`
 
@@ -84,13 +97,21 @@ npm test               # 23 tests
 | 3 | Researcher |
 | 4 | Funder |
 
-**Run the frontend** (serve the project root so the page can load `build/contracts/ReleaseGuard.json`)
+**Run the frontend** (React + Vite dev server; it always serves the freshly compiled contract, so there are no stale-cache problems)
 
 ```bash
 npm run serve
 ```
 
-Open http://localhost:3000/src/index.html and click **Connect Wallet**.
+Open http://localhost:3000/ . The page reconnects to MetaMask automatically if the site is already permitted. Otherwise click **Connect wallet**.
+
+## Live demo kit
+
+`npm run demofiles` (the launcher runs it automatically) creates the **demo-files** folder with everything needed for a live demo: real `.zip` releases with provenance JSON files, a library, **tampered** copies, node snapshots with a **corrupted** copy, and three bounty report files. None of them is registered by the seed data, so each one can be registered once per run.
+
+Open `demo-files/DEMO-GUIDE.md` for the exact values to type and a ready-made demo script.
+
+If you see **"This exact file is already registered"**: a file's fingerprint depends on its content, not its name, so copies and renamed files count as the same file. Pick a different file from `demo-files` (the seeded demo data already uses `sample/app-v1.0.0.zip` and `sample/snapshot-demo.tar.gz`).
 
 ## Demo data and scripts
 
@@ -149,7 +170,10 @@ contracts/ReleaseGuard.sol
 migrations/1_initial_migration.js, 2_deploy_release_guard.js
 test/ReleaseGuard.test.js
 scripts/common.js, make-samples.js, make-provenance.js, verify-snapshot.js, seed-demo.js
-src/index.html, app.js, style.css
-sample/   demo files
+web/                      React + Vite frontend (index.html, src/App.jsx, src/components/, src/styles.css)
+vite.config.mjs           Vite config (also serves build/contracts/ReleaseGuard.json fresh on every request)
+legacy/                   the earlier plain HTML + JS frontend (kept as a fallback: npm run serve:legacy)
+sample/   small sample files used by the seed script
+demo-files/   live-demo kit (zips, tampered copies, snapshots, bounty reports, DEMO-GUIDE.md)
 truffle-config.js, package.json
 ```

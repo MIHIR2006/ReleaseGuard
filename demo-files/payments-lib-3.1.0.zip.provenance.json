@@ -1,0 +1,29 @@
+{
+  "_type": "https://in-toto.io/Statement/v1",
+  "subject": [
+    {
+      "name": "payments-lib-3.1.0.zip",
+      "digest": {
+        "sha256": "2e4bbe8713e855c35d76e2b0bc7c77c76c9595a5b41fe46a43f09df825db68f9"
+      }
+    }
+  ],
+  "predicateType": "https://slsa.dev/provenance/v1",
+  "predicate": {
+    "buildDefinition": {
+      "buildType": "https://example.com/hermetic-build/v1",
+      "externalParameters": {
+        "source": "git+https://github.com/example/payments-lib",
+        "commit": "ee8408ae5109f2a72fe07aa25e916d12d91e7401"
+      }
+    },
+    "runDetails": {
+      "builder": {
+        "id": "https://github.com/example/payments-lib/.github/workflows/build.yml"
+      },
+      "metadata": {
+        "startedOn": "2026-11-01T00:00:00Z"
+      }
+    }
+  }
+}

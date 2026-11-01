@@ -1,0 +1,29 @@
+{
+  "_type": "https://in-toto.io/Statement/v1",
+  "subject": [
+    {
+      "name": "webshop-1.2.0.zip",
+      "digest": {
+        "sha256": "1305b256f1ee960544e400ad0ee74aef093c7d36e20216e704c658c21dcdc113"
+      }
+    }
+  ],
+  "predicateType": "https://slsa.dev/provenance/v1",
+  "predicate": {
+    "buildDefinition": {
+      "buildType": "https://example.com/hermetic-build/v1",
+      "externalParameters": {
+        "source": "git+https://github.com/example/webshop",
+        "commit": "16c851d1540c8d77bc9f39b2e3cec533f623d5d9"
+      }
+    },
+    "runDetails": {
+      "builder": {
+        "id": "https://github.com/example/webshop/.github/workflows/build.yml"
+      },
+      "metadata": {
+        "startedOn": "2026-11-01T00:00:00Z"
+      }
+    }
+  }
+}

@@ -1,0 +1,2 @@
+LOW: debug logging prints the user's email address.
+Impact: minor privacy leak in log files.

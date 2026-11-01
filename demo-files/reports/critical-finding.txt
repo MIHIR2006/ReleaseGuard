@@ -1,0 +1,3 @@
+CRITICAL: build script downloads and runs code from an unknown server.
+Steps: open build.sh line 12.
+Impact: remote code execution on every user machine.

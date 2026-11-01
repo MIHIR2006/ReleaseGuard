@@ -1,0 +1,29 @@
+{
+  "_type": "https://in-toto.io/Statement/v1",
+  "subject": [
+    {
+      "name": "chat-app-2.0.0.zip",
+      "digest": {
+        "sha256": "ecadce65fc23d5ca2e551a6194cfbe6203828a7ddac391f07114ad88e47cf531"
+      }
+    }
+  ],
+  "predicateType": "https://slsa.dev/provenance/v1",
+  "predicate": {
+    "buildDefinition": {
+      "buildType": "https://example.com/hermetic-build/v1",
+      "externalParameters": {
+        "source": "git+https://github.com/example/chat-app",
+        "commit": "84861edd668e225dca17235f93281e4cf3a2236f"
+      }
+    },
+    "runDetails": {
+      "builder": {
+        "id": "https://github.com/example/chat-app/.github/workflows/build.yml"
+      },
+      "metadata": {
+        "startedOn": "2026-11-01T00:00:00Z"
+      }
+    }
+  }
+}

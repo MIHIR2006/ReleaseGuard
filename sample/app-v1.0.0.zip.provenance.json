@@ -1,0 +1,29 @@
+{
+  "_type": "https://in-toto.io/Statement/v1",
+  "subject": [
+    {
+      "name": "app-v1.0.0.zip",
+      "digest": {
+        "sha256": "783f939520336284f870a992e9781d02f723132a98b8d87a0ab7ea5e4d68706b"
+      }
+    }
+  ],
+  "predicateType": "https://slsa.dev/provenance/v1",
+  "predicate": {
+    "buildDefinition": {
+      "buildType": "https://example.com/hermetic-build/v1",
+      "externalParameters": {
+        "source": "git+https://github.com/example/releaseguard-demo",
+        "commit": "9fceb02d0ae598e95dc970b74767f19372d61af8"
+      }
+    },
+    "runDetails": {
+      "builder": {
+        "id": "https://github.com/example/releaseguard-demo/.github/workflows/build.yml"
+      },
+      "metadata": {
+        "startedOn": "2026-11-01T00:00:00Z"
+      }
+    }
+  }
+}

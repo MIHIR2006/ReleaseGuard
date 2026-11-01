@@ -1,0 +1,25 @@
+{
+  "name": "releaseguard",
+  "version": "1.0.0",
+  "description": "Blockchain trust registry for software releases, node snapshots and bug bounties",
+  "scripts": {
+    "ganache": "ganache --port 7545 --chain.chainId 1337 --wallet.deterministic",
+    "compile": "truffle compile",
+    "migrate": "truffle migrate --reset",
+    "test": "truffle test",
+    "samples": "node scripts/make-samples.js",
+    "provenance": "node scripts/make-provenance.js sample/app-v1.0.0.zip",
+    "seed": "node scripts/seed-demo.js",
+    "verify": "node scripts/verify-snapshot.js sample/snapshot-demo.tar.gz",
+    "serve": "http-server . -p 3000"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "ganache": "^7.9.2",
+    "truffle": "^5.11.5"
+  },
+  "dependencies": {
+    "http-server": "^14.1.1",
+    "web3": "^1.10.4"
+  }
+}

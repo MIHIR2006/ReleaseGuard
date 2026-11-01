@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ReleaseGuard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <div>
+      <h1>&#128279; ReleaseGuard</h1>
+      <p class="sub">Trust registry for software releases, node snapshots and bug bounties</p>
+    </div>
+    <div class="wallet">
+      <button id="btnConnect">Connect Wallet</button>
+      <div id="walletInfo" class="muted">Not connected</div>
+    </div>
+  </header>
+
+  <div id="msg" class="msg" hidden></div>
+
+  <nav id="tabs">
+    <button data-tab="register" class="active">Register</button>
+    <button data-tab="attest">Attest</button>
+    <button data-tab="bounty">Bounty</button>
+    <button data-tab="verify">Verify</button>
+    <button data-tab="releases">Releases</button>
+  </nav>
+
+  <main>
+    <!-- REGISTER -->
+    <section id="tab-register" class="tab active">
+      <h2>Register a release or snapshot</h2>
+      <p class="muted">Files are hashed (SHA-256) in your browser. Only hashes go on-chain.</p>
+      <label>Type
+        <select id="regType">
+          <option value="0">Binary</option>
+          <option value="1">NodeSnapshot</option>
+          <option value="2">Library</option>
+        </select>
+      </label>
+      <label>Name <input id="regName" placeholder="app"></label>
+      <label>Version <input id="regVersion" placeholder="1.0.0"></label>
+      <label>Source commit <input id="regCommit" placeholder="git commit hash (optional for snapshots)"></label>
+      <label>Artifact file <input id="regFile" type="file"></label>
+      <label>Provenance JSON (optional) <input id="regProv" type="file"></label>
+      <button id="btnRegister">Register on-chain</button>
+    </section>
+
+    <!-- ATTEST -->
+    <section id="tab-attest" class="tab">
+      <h2>Attest or revoke a release <span class="muted">(attesters only)</span></h2>
+      <label>Release ID <input id="attId" type="number" min="1"></label>
+      <label>Proof digest
+        <input id="attProof" placeholder="0x... (bytes32) or any text, which is hashed with keccak256">
+      </label>
+      <div class="row">
+        <button id="btnAttest">Mark Verified</button>
+        <button id="btnRevoke" class="danger">Revoke (mark Compromised)</button>
+      </div>
+    </section>
+
+    <!-- BOUNTY -->
+    <section id="tab-bounty" class="tab">
+      <h2>Bug bounty</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>1. Fund a bounty</h3>
+          <label>Release ID <input id="fundId" type="number" min="1"></label>
+          <label>Amount (ETH) <input id="fundAmt" value="1"></label>
+          <button id="btnFund">Fund</button>
+        </div>
+        <div class="card">
+          <h3>2. Submit a finding</h3>
+          <label>Release ID <input id="findId" type="number" min="1"></label>
+          <label>Severity
+            <select id="findSev">
+              <option value="0">Low</option><option value="1">Medium</option>
+              <option value="2">High</option><option value="3">Critical</option>
+            </select>
+          </label>
+          <label>Report file <input id="findFile" type="file"></label>
+          <label>or report text <input id="findText" placeholder="short description (hashed)"></label>
+          <button id="btnFind">Submit finding</button>
+        </div>
+        <div class="card">
+          <h3>3. Resolve a finding <span class="muted">(attesters)</span></h3>
+          <label>Finding ID <input id="resId" type="number" min="1"></label>
+          <label>Decision
+            <select id="resApprove"><option value="1">Approve</option><option value="0">Reject</option></select>
+          </label>
+          <label>Reward (ETH) <input id="resReward" value="0.5"></label>
+          <button id="btnResolve">Resolve</button>
+        </div>
+        <div class="card">
+          <h3>4. Withdraw reward</h3>
+          <p>Pending for this account: <b id="pending">0</b> ETH</p>
+          <button id="btnWithdraw">Withdraw</button>
+        </div>
+      </div>
+      <h3>Findings</h3>
+      <table id="findingsTable"><thead><tr><th>#</th><th>Release</th><th>Reporter</th><th>Severity</th><th>Status</th><th>Reward (ETH)</th></tr></thead><tbody></tbody></table>
+    </section>
+
+    <!-- VERIFY -->
+    <section id="tab-verify" class="tab">
+      <h2>Verify a file</h2>
+      <p class="muted">Upload the file you downloaded. Give a release ID to compare against it, or leave the ID empty to look the file up by hash.</p>
+      <label>File <input id="verFile" type="file"></label>
+      <label>Release ID (optional) <input id="verId" type="number" min="1"></label>
+      <button id="btnVerify">Check integrity</button>
+      <div id="verResult" class="result"></div>
+    </section>
+
+    <!-- RELEASES -->
+    <section id="tab-releases" class="tab">
+      <h2>All releases <button id="btnRefresh" class="small">Refresh</button></h2>
+      <table id="releasesTable">
+        <thead><tr><th>#</th><th>Type</th><th>Name</th><th>Version</th><th>Status</th><th>Bounty (ETH)</th><th>Publisher</th><th>Artifact hash</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </section>
+  </main>
+
+  <footer class="muted">ReleaseGuard &middot; Blockchain Technology project &middot; local Ganache network</footer>
+
+  <script src="../node_modules/web3/dist/web3.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

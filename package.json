@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Blockchain trust registry for software releases, node snapshots and bug bounties",
   "scripts": {
-    "ganache": "ganache --port 7545 --chain.chainId 1337 --wallet.deterministic",
+    "ganache": "ganache --port 7545 --chain.chainId 1337 --chain.networkId 1337 --wallet.deterministic",
     "compile": "truffle compile",
     "migrate": "truffle migrate --reset",
     "test": "truffle test",
@@ -11,7 +11,9 @@
     "provenance": "node scripts/make-provenance.js sample/app-v1.0.0.zip",
     "seed": "node scripts/seed-demo.js",
     "verify": "node scripts/verify-snapshot.js sample/snapshot-demo.tar.gz",
-    "serve": "http-server . -p 3000"
+    "serve": "http-server . -p 3000",
+    "start": "node scripts/start.js",
+    "start:demo": "node scripts/start.js --demo"
   },
   "license": "MIT",
   "devDependencies": {

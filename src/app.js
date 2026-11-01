@@ -71,9 +71,17 @@ async function connect() {
     if (!res.ok) throw new Error("build/contracts/ReleaseGuard.json not found. Run truffle compile and migrate, and serve the project root.");
     const artifact = await res.json();
     const netId = await web3.eth.net.getId();
-    const net = artifact.networks[netId];
-    if (!net) throw new Error("ReleaseGuard is not deployed on network " + netId + ". Run truffle migrate and select the Ganache network in MetaMask.");
-    contract = new web3.eth.Contract(artifact.abi, net.address);
+    let address = artifact.networks[netId] && artifact.networks[netId].address;
+    // Fallback: use any recorded deployment that really has contract code on this chain
+    if (!address || (await web3.eth.getCode(address)) === "0x") {
+      address = null;
+      for (const n of Object.values(artifact.networks)) {
+        if ((await web3.eth.getCode(n.address)) !== "0x") { address = n.address; break; }
+      }
+    }
+    if (!address) throw new Error("ReleaseGuard is not deployed on this chain (network " + netId + "). Start it with npm start, or run npm run migrate, and select Ganache Local in MetaMask.");
+    const net = { address };
+    contract = new web3.eth.Contract(artifact.abi, address);
     ownerAddr = await contract.methods.owner().call();
 
     if (window.ethereum.on) {

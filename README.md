@@ -35,6 +35,17 @@ is stored on-chain, so signature checks (e.g. Sigstore) stay off-chain.
 | Funder | Anyone | Fund a release's bounty |
 | Researcher | Anyone except the release's publisher | Submit findings, withdraw rewards |
 
+## Quick start (one command)
+
+1. Install Node.js 18+ and the MetaMask browser extension (once).
+2. Double-click **`start.bat`** (or **`start-demo.bat`** to also load demo data). On macOS or Linux run `npm start` (or `npm run start:demo`).
+
+The launcher installs packages on the first run, starts Ganache, compiles and deploys the contract, runs the 23 tests, starts the website and opens it in your browser. Press **Ctrl+C** (or close the window) to stop everything.
+
+Do this once in MetaMask (details in the Setup section below): add the network **Ganache Local** (RPC `http://127.0.0.1:7545`, chain ID `1337`, symbol `ETH`), import Ganache's private keys (0) to (4), and in the connected-site bar make sure the network is **Ganache Local**. The keys are the same every time the launcher runs.
+
+Each launch starts a fresh blockchain, so earlier releases disappear and the contract is redeployed automatically. If MetaMask transactions fail after a restart, go to Settings, Advanced, **Clear activity tab data**.
+
 ## Setup (Windows, macOS or Linux)
 
 Requirements: Node.js 18+, the MetaMask browser extension, internet access for the first compile (Truffle downloads solc 0.8.19).
